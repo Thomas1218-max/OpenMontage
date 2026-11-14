@@ -1,0 +1,84 @@
+{
+  "version": "1.0",
+  "project_id": "nail-promo-zh",
+  "decisions": [
+    {
+      "category": "pipeline_selection",
+      "subject": "Pipeline",
+      "chosen": "hybrid",
+      "options_considered": [
+        "hybrid",
+        "cinematic"
+      ],
+      "reason": "User footage + designed text/FX overlays, no generation."
+    },
+    {
+      "category": "render_runtime_selection",
+      "subject": "Composition runtime",
+      "chosen": "remotion",
+      "options_considered": [
+        {
+          "option": "remotion",
+          "note": "React + OffthreadVideo: frame-exact video trims/speed, spring stamp/pop motion, renderStill for the cover from the same code."
+        },
+        {
+          "option": "hyperframes",
+          "rejected_because": "Equally capable for kinetic type, but Remotion reuses the installed composer + same code path for cover still; user can switch on request."
+        },
+        {
+          "option": "ffmpeg",
+          "rejected_because": "drawtext cannot do the stamp/spring/sparkle motion design at this quality."
+        }
+      ],
+      "pending_user_confirmation": true
+    },
+    {
+      "category": "composition_mode",
+      "subject": "Authoring mode",
+      "chosen": "atelier",
+      "reason": "Single hero promo; bespoke cream/nude/champagne-gold look."
+    },
+    {
+      "category": "music_selection",
+      "subject": "Background music",
+      "chosen": "Pixabay 'Upbeat Chill' by VelarioMusic (Pixabay Content License, free commercial use, no attribution)",
+      "options_considered": [
+        "Lofi Pop - ZephiraMusic",
+        "Beauty Fashion - Monume",
+        "Upbeat Lofi - JonasBlakewood"
+      ],
+      "reason": "~99 BPM: 2 beats = 1.2s matches the portfolio cadence; breakdown→drop lands on the portfolio cut at 16.8s.",
+      "pending_user_confirmation": true
+    },
+    {
+      "category": "sfx",
+      "subject": "Ding / dong / shimmer",
+      "chosen": "synthesized locally (numpy), no license concerns"
+    },
+    {
+      "category": "fonts",
+      "subject": "Chinese font",
+      "chosen": "Noto Sans CJK SC Bold (system fonts-noto-cjk)"
+    },
+    {
+      "category": "approval_policy",
+      "subject": "Preview gate",
+      "chosen": "User asked to see storyboard preview + cover before final A/B export; final renders wait for approval."
+    },
+    {
+      "category": "music_selection",
+      "subject": "Background music",
+      "chosen": "Pixabay 'Lofi Pop' by ZephiraMusic (Pixabay Content License, free commercial use, no attribution)",
+      "options_considered": [
+        "Upbeat Chill - VelarioMusic (previous choice)"
+      ],
+      "rejected_because": "changed: user requested lofi pop after preview",
+      "reason": "~92.3 BPM; timeline re-snapped to its beat grid, lift lands on portfolio cut at 16.95s."
+    },
+    {
+      "category": "approval_policy",
+      "subject": "Preview gate",
+      "chosen": "approved_with_changes: user approved preview ('不错') with music swap; final A/B + cover exported."
+    }
+  ]
+}

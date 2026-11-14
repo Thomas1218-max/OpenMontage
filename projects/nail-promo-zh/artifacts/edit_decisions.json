@@ -1,0 +1,61 @@
+{
+  "version": "1.0",
+  "render_runtime": "remotion",
+  "composition_mode": "atelier",
+  "renderer_family": "bespoke",
+  "bespoke": {
+    "art_direction": "Soft-luxe nail studio: cream (#FBF6F1) / nude pink (#E9C9C1) / champagne gold gradient, Noto Sans CJK SC Bold, white type with soft cocoa shadows. Signature device: four-point glints that twinkle on the nails and burst on every beat-cut. Red pulsing promo badge from 0:03 to end."
+  },
+  "timeline_frames_30fps": {
+    "S1_hook": [
+      0,
+      98
+    ],
+    "S2_price": [
+      98,
+      176
+    ],
+    "S3_process": [
+      176,
+      313
+    ],
+    "S4_swatches": [
+      313,
+      391
+    ],
+    "S5_gel_wall": [
+      391,
+      509
+    ],
+    "S6_portfolio": [
+      509,
+      704
+    ],
+    "S7_cta": [
+      704,
+      836
+    ],
+    "outro_line": [
+      802,
+      836
+    ]
+  },
+  "audio": {
+    "music": "assets/music/lofi_pop.mp3 (Pixabay 'Lofi Pop' by ZephiraMusic, Pixabay Content License) from 35.944s, 27.87s, fade-out 26.4s",
+    "sfx": {
+      "ding": "2.8s",
+      "dong (stamp landing)": "3.567s",
+      "shimmer (outro)": "26.733s"
+    },
+    "source_audio": "all muted",
+    "loudness": "loudnorm I=-14 TP=-1.5"
+  },
+  "text_source": "texts_zh.json",
+  "source_cuts": {
+    "hook": "IMG_4307 3.75–7.05s",
+    "paint": "IMG_3858 0–4.32s @0.9x",
+    "swatch": "IMG_3746 0.2–3.3s",
+    "wall": "IMG_3747 0.7–6.6s @1.5x",
+    "end": "IMG_4307 7.0–8.7s @0.8x + freeze"
+  }
+}
