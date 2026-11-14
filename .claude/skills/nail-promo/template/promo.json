@@ -1,0 +1,23 @@
+{
+  "_comment": "One file drives a nail promo: source cuts, beat-snapped timeline (frames @30fps), music and SFX. Values below are from the first production (Nail room 1:1, Nov 2026) - edit per project. Clip keys are fixed (hook/paint/swatch/wall/end); each becomes public/<key>.mp4. start/dur are SOURCE seconds; output length = dur / speed.",
+  "slug": "nail-promo-zh",
+  "clips": {
+    "hook":   {"src": "assets/IMG_4307.mp4", "start": 3.75, "dur": 3.3,  "speed": 1.0},
+    "paint":  {"src": "assets/IMG_3858.mp4", "start": 0.0,  "dur": 4.32, "speed": 0.9},
+    "swatch": {"src": "assets/IMG_3746.mp4", "start": 0.2,  "dur": 3.1,  "speed": 1.0},
+    "wall":   {"src": "assets/IMG_3747.mp4", "start": 0.7,  "dur": 5.9,  "speed": 1.5},
+    "end":    {"src": "assets/IMG_4307.mp4", "start": 7.0,  "dur": 1.7,  "speed": 0.8, "freeze": 4.0}
+  },
+  "photos": ["assets/IMG_3599.jpeg", "assets/IMG_3734.jpeg", "assets/IMG_3597.jpeg", "assets/IMG_3596.jpeg", "assets/IMG_3732.jpeg", "assets/IMG_4361.jpeg"],
+  "price_photo": "IMG_3599.jpg",
+  "cover_photo": "IMG_3599.jpg",
+  "timeline": {"S1": 0, "S2": 98, "S3": 176, "S4": 313, "S5": 391, "S6": 509, "S7": 704, "OUTRO": 802, "END": 836, "PHOTO": 39},
+  "music": {
+    "file": "assets/music/lofi_pop.mp3",
+    "start": 35.944,
+    "fade_out": 1.47,
+    "volume": 0.8,
+    "credit": "Pixabay 'Lofi Pop' by ZephiraMusic - Pixabay Content License (free commercial use, no attribution)"
+  },
+  "sfx": {"ding": 2.8, "dong": 3.567, "shimmer": 26.733}
+}

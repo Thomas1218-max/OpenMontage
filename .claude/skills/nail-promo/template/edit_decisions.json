@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "render_runtime": "remotion",
+  "composition_mode": "atelier",
+  "renderer_family": "bespoke",
+  "bespoke": {
+    "art_direction": "Soft-luxe nail studio: cream (#FBF6F1) / nude pink (#E9C9C1) / champagne gold gradient, Noto Sans CJK SC Bold, white type with soft cocoa shadows. Signature device: four-point glints that twinkle on the nails and burst on every beat-cut. Red pulsing promo badge from 0:03 to end."
+  },
+  "_note": "Timeline, clips, music and SFX live in promo.json; text in texts_<lang>.json. render.py fills bespoke.entry/props at render time."
+}

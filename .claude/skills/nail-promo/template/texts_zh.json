@@ -1,0 +1,56 @@
+{
+  "_comment": "All on-screen text for the nail promo. Copy this file to texts_vi.json and translate the values to make the Vietnamese version. Keys must stay the same. Use \\n for a manual line break; wrap text in {{ }} to color it champagne gold.",
+  "lang": "zh-CN",
+  "font_family": "'Noto Sans CJK SC', 'Noto Sans SC', 'Source Han Sans SC'",
+
+  "hook": {
+    "A": ["这一整副美甲…", "你猜多少钱？🤔"],
+    "B": ["做了一副\n像 50 万的美甲", "结果只花了\n{{130K}} 😳"]
+  },
+
+  "promo_tag": "⏰ 限时优惠",
+
+  "price": {
+    "lead": "限时优惠 全套只要",
+    "amount": "130K",
+    "currency": "₫！",
+    "sub": "≈ 一杯奶茶 + 一份午餐的钱"
+  },
+
+  "process": ["一笔一笔 手绘细节 ✍️", "不赶时间，慢慢做"],
+
+  "swatches": "上百种颜色任你挑 🎨",
+
+  "gel_wall": "进口甲油胶\n猫眼 · 果冻 · 法式 全都有",
+
+  "portfolio": {
+    "top": "限时优惠：每一款都是 {{130K}}",
+    "save_hint": "先截图存起来 📌",
+    "items": [
+      { "image": "IMG_3734.jpg", "no": "1 号", "name": "金线勾边" },
+      { "image": "IMG_3597.jpg", "no": "2 号", "name": "贝壳果冻" },
+      { "image": "IMG_3596.jpg", "no": "3 号", "name": "薄荷法式" },
+      { "image": "IMG_3732.jpg", "no": "4 号", "name": "菱格小钻" },
+      { "image": "IMG_3599.jpg", "no": "5 号", "name": "猫眼金线" }
+    ]
+  },
+
+  "cta": {
+    "tag": "⏰ 限时优惠",
+    "headline_pre": "全套",
+    "headline_amount": "130K ₫",
+    "includes": "含：延长 / 猫眼或果冻底 / 造型设计",
+    "urgency": "优惠随时结束，先约先做",
+    "address": "📍 Nail room 1:1｜86 Phan Văn Hùm, Q12, TP.HCM",
+    "hours": "⏰ 9:00 营业到晚上",
+    "contact": "💬 Zalo 私讯预约"
+  },
+
+  "outro": "喜欢几号？\n评论区告诉我 💅",
+
+  "cover": {
+    "headline": "{{130K}}\n做一整副？！",
+    "tag": "限时优惠",
+    "sub": "胡志明 Q12 · 平价高质感美甲"
+  }
+}
