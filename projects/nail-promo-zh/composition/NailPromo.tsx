@@ -6,6 +6,8 @@ import {
   Img,
   OffthreadVideo,
   Sequence,
+  continueRender,
+  delayRender,
   interpolate,
   random,
   spring,
@@ -47,8 +49,11 @@ const C = {
   goldSolid: '#D8B172',
 };
 
+type FontFace_ = {family: string; src: string; weight?: number; unicode_range?: string};
 type Texts = {
   font_family: string;
+  font_faces?: FontFace_[];
+  sizes?: Record<string, number | number[]>;
   hook: Record<'A' | 'B', [string, string]>;
   promo_tag: string;
   price: {lead: string; amount: string; currency: string; sub: string};
@@ -78,6 +83,46 @@ export type PromoProps = {variant: 'A' | 'B'; texts: Texts | null};
 
 const EMOJI = "'Noto Color Emoji', 'Apple Color Emoji'";
 const fontStack = (t: Texts) => `${t.font_family}, ${EMOJI}, sans-serif`;
+
+// Per-language size overrides (texts.sizes[key]); falls back to the zh defaults.
+const sz = (t: Texts, key: string, def: number): number => {
+  const v = t.sizes?.[key];
+  return typeof v === 'number' ? v : def;
+};
+const szs = (t: Texts, key: string, def: number[]): number[] => {
+  const v = t.sizes?.[key];
+  return Array.isArray(v) ? v : def;
+};
+
+// Load any web fonts declared in the texts file (e.g. Be Vietnam Pro for vi)
+// before the first frame is captured.
+const loaded = new Set<string>();
+const useFonts = (t: Texts) => {
+  const faces = t.font_faces ?? [];
+  const key = faces.map((f) => f.src).join('|');
+  const [handle] = React.useState(() => (faces.length && !loaded.has(key) ? delayRender('fonts') : null));
+  React.useEffect(() => {
+    if (handle === null) return;
+    Promise.all(
+      faces.map((f) =>
+        new FontFace(f.family, `url(${staticFile(f.src)}) format('woff2')`, {
+          weight: String(f.weight ?? 700),
+          unicodeRange: f.unicode_range,
+        })
+          .load()
+          .then((ff) => document.fonts.add(ff)),
+      ),
+    )
+      .then(() => {
+        loaded.add(key);
+        continueRender(handle);
+      })
+      .catch((e) => {
+        console.error(e);
+        continueRender(handle);
+      });
+  }, [handle]);
+};
 
 const SOFT_SHADOW =
   '0 2px 3px rgba(58, 30, 24, 0.45), 0 6px 22px rgba(58, 30, 24, 0.40), 0 0 2px rgba(58, 30, 24, 0.35)';
@@ -347,7 +392,7 @@ const PromoTag: React.FC<{t: Texts; text: string; at: number; static?: boolean}>
         opacity: pulse,
         fontFamily: fontStack(t),
         fontWeight: 700,
-        fontSize: 40,
+        fontSize: sz(t, 'tag', 40),
         color: '#fff',
         padding: '12px 26px 14px',
         borderRadius: 14,
@@ -394,11 +439,11 @@ const S1Hook: React.FC<{t: Texts; variant: 'A' | 'B'}> = ({t, variant}) => {
       <TextBlock t={t} top={330}>
         {frame < 45 ? (
           <div style={{transform: `scale(${settle})`}}>
-            <Rich text={l1} size={100} />
+            <Rich text={l1} size={sz(t, 'hook', 100)} />
           </div>
         ) : (
           <div style={pop2}>
-            <Rich text={l2} size={100} goldStyle={{fontSize: '1.15em'}} />
+            <Rich text={l2} size={sz(t, 'hook', 100)} goldStyle={{fontSize: '1.15em'}} />
           </div>
         )}
       </TextBlock>
@@ -425,7 +470,7 @@ const S2Price: React.FC<{t: Texts}> = ({t}) => {
       <Scrim side="top" strength={0.3} reach={42} />
       <TextBlock t={t} top={372}>
         <div style={{opacity: leadOp}}>
-          <Rich text={t.price.lead} size={64} />
+          <Rich text={t.price.lead} size={sz(t, 'price_lead', 64)} />
         </div>
         <div style={{position: 'relative', height: 290, marginTop: 4}}>
           {ring > 0 && ring < 1 ? (
@@ -459,7 +504,7 @@ const S2Price: React.FC<{t: Texts}> = ({t}) => {
           </div>
         </div>
         <div style={{...sub, marginTop: 10, display: 'inline-block', padding: '10px 28px', borderRadius: 999, background: 'rgba(74, 48, 43, 0.38)'}}>
-          <Rich text={t.price.sub} size={48} />
+          <Rich text={t.price.sub} size={sz(t, 'price_sub', 48)} />
         </div>
       </TextBlock>
     </AbsoluteFill>
@@ -498,8 +543,8 @@ const S3Process: React.FC<{t: Texts}> = ({t}) => {
       {/* soft focus vignette that pulls the eye to the brush tip */}
       <AbsoluteFill style={{background: 'radial-gradient(ellipse 60% 42% at 44% 64%, rgba(0,0,0,0) 55%, rgba(60,35,30,0.28) 100%)'}} />
       <Scrim side="top" strength={0.45} reach={40} />
-      <Caption t={t} text={t.process[0]} at={2} until={68} top={410} size={80} />
-      <Caption t={t} text={t.process[1]} at={68} top={410} size={80} />
+      <Caption t={t} text={t.process[0]} at={2} until={68} top={410} size={sz(t, 'process', 80)} />
+      <Caption t={t} text={t.process[1]} at={68} top={410} size={sz(t, 'process', 80)} />
     </AbsoluteFill>
   );
 };
@@ -523,7 +568,7 @@ const S4Swatches: React.FC<{t: Texts}> = ({t}) => {
       />
       <AbsoluteFill style={{boxShadow: 'inset 0 0 160px 40px rgba(255, 238, 225, 0.55)'}} />
       <Scrim side="top" strength={0.42} reach={36} />
-      <Caption t={t} text={t.swatches} at={2} top={410} size={78} />
+      <Caption t={t} text={t.swatches} at={2} top={410} size={sz(t, 'swatches', 78)} />
       <Sparkles seed="sw" count={6} region={{x0: 120, x1: 960, y0: 760, y1: 1300}} size={[12, 26]} />
     </AbsoluteFill>
   );
@@ -541,7 +586,7 @@ const S5Wall: React.FC<{t: Texts}> = ({t}) => {
       <AbsoluteFill style={{transform: `scale(${push * slow})`, filter: blur ? `blur(${blur}px)` : undefined}}>
         <OffthreadVideo src={staticFile('wall.mp4')} muted style={{width: 1080, height: 1920}} />
         <Scrim side="top" strength={0.55} reach={42} />
-        <Caption t={t} text={t.gel_wall} at={2} top={405} size={60} lineSizes={[86, 58]} />
+        <Caption t={t} text={t.gel_wall} at={2} top={405} size={60} lineSizes={szs(t, 'gel_wall', [86, 58])} />
       </AbsoluteFill>
       <AbsoluteFill style={{background: '#FFF8F0', opacity: flash}} />
     </AbsoluteFill>
@@ -569,8 +614,8 @@ const PhotoLabel: React.FC<{t: Texts; no: string; name: string}> = ({t, no, name
         boxShadow: '0 10px 30px rgba(74, 48, 43, 0.35)',
       }}
     >
-      <div style={{background: C.gold, color: C.cocoa, fontSize: 50, padding: '10px 22px', letterSpacing: '0.02em'}}>{no}</div>
-      <div style={{background: 'rgba(251, 246, 241, 0.92)', color: C.cocoa, fontSize: 46, padding: '12px 26px', display: 'flex', alignItems: 'center'}}>
+      <div style={{background: C.gold, color: C.cocoa, fontSize: sz(t, 'label_no', 50), padding: '10px 22px', letterSpacing: '0.02em'}}>{no}</div>
+      <div style={{background: 'rgba(251, 246, 241, 0.92)', color: C.cocoa, fontSize: sz(t, 'label_name', 46), padding: '12px 26px', display: 'flex', alignItems: 'center'}}>
         {name}
       </div>
     </div>
@@ -593,13 +638,13 @@ const S6Portfolio: React.FC<{t: Texts}> = ({t}) => {
       <Scrim side="top" strength={0.32} reach={30} />
       <TextBlock t={t} top={372}>
         <div style={{...topBar, display: 'inline-block', padding: '10px 30px', borderRadius: 999, background: 'rgba(74, 48, 43, 0.42)'}}>
-          <Rich text={t.portfolio.top} size={50} />
+          <Rich text={t.portfolio.top} size={sz(t, 'portfolio_top', 50)} />
         </div>
       </TextBlock>
       {frame < 62 ? (
         <TextBlock t={t} top={470}>
           <div style={{...hint, opacity: hint.opacity * hintOut}}>
-            <Rich text={t.portfolio.save_hint} size={46} />
+            <Rich text={t.portfolio.save_hint} size={sz(t, 'save_hint', 46)} />
           </div>
         </TextBlock>
       ) : null}
@@ -638,7 +683,7 @@ const S7Cta: React.FC<{t: Texts}> = ({t}) => {
   const outroAt = T.OUTRO - T.S7;
   const outro = usePop(outroAt, 0.6, 10);
   const c = t.cta;
-  const small: React.CSSProperties = {fontSize: 40, color: C.cocoa, lineHeight: 1.35, textShadow: '0 1px 2px rgba(255,255,255,0.6)'};
+  const small: React.CSSProperties = {fontSize: sz(t, 'cta_small', 40), color: C.cocoa, lineHeight: 1.35, textWrap: 'balance' as React.CSSProperties['textWrap'], textShadow: '0 1px 2px rgba(255,255,255,0.6)'};
   return (
     <AbsoluteFill>
       <OffthreadVideo src={staticFile('end.mp4')} muted style={{width: 1080, height: 1920, filter: blur ? `blur(${blur}px)` : undefined, transform: 'scale(1.04)'}} />
@@ -679,7 +724,7 @@ const S7Cta: React.FC<{t: Texts}> = ({t}) => {
           </span>
         </CtaLine>
         <CtaLine at={15} style={{marginTop: 10, whiteSpace: 'nowrap'}}>
-          <span style={{fontSize: 76, color: C.cocoa, marginRight: 16, verticalAlign: 'middle'}}>{c.headline_pre}</span>
+          <span style={{fontSize: sz(t, 'cta_headline_pre', 76), color: C.cocoa, marginRight: 16, verticalAlign: 'middle'}}>{c.headline_pre}</span>
           <Gold style={{fontSize: 128, verticalAlign: 'middle', backgroundImage: 'linear-gradient(180deg, #F0D08C 0%, #D2A452 55%, #A97A30 100%)', filter: 'drop-shadow(0 2px 2px rgba(120,80,30,0.45)) drop-shadow(0 6px 14px rgba(150,100,40,0.25))'}}>
             {c.headline_amount}
           </Gold>
@@ -689,19 +734,19 @@ const S7Cta: React.FC<{t: Texts}> = ({t}) => {
         <CtaLine at={25}>
           <div style={{height: 2, margin: '22px 40px 20px', background: 'linear-gradient(90deg, rgba(216,177,114,0), rgba(216,177,114,0.9), rgba(216,177,114,0))'}} />
         </CtaLine>
-        <CtaLine at={27} style={{...small, fontSize: 37}}>
+        <CtaLine at={27} style={{...small, fontSize: sz(t, 'cta_info', 37)}}>
           {c.address.split(/[｜|\n]/).map((part, i) => (
             <div key={i}>{part.trim()}</div>
           ))}
         </CtaLine>
-        <CtaLine at={30} style={{...small, fontSize: 37, marginTop: 6}}>{c.hours}</CtaLine>
-        <CtaLine at={33} style={{...small, fontSize: 37, marginTop: 6}}>{c.contact}</CtaLine>
+        <CtaLine at={30} style={{...small, fontSize: sz(t, 'cta_info', 37), marginTop: 6}}>{c.hours}</CtaLine>
+        <CtaLine at={33} style={{...small, fontSize: sz(t, 'cta_info', 37), marginTop: 6}}>{c.contact}</CtaLine>
       </div>
       {frame >= outroAt ? (
         <>
           <TextBlock t={t} top={390}>
             <div style={outro}>
-              <Rich text={t.outro} size={78} />
+              <Rich text={t.outro} size={sz(t, 'outro', 78)} />
             </div>
           </TextBlock>
           <Burst seed="outro" cx={540} cy={500} at={outroAt} count={18} spread={460} dur={26} />
@@ -718,6 +763,7 @@ const S7Cta: React.FC<{t: Texts}> = ({t}) => {
 export const NailPromo: React.FC<PromoProps> = ({variant, texts}) => {
   if (!texts) throw new Error('texts prop is required (pass texts_zh.json via --props)');
   const t = texts;
+  useFonts(t);
   return (
     <AbsoluteFill style={{background: C.cream}}>
       <Sequence from={T.S1} durationInFrames={T.S2 - T.S1}>
@@ -755,15 +801,16 @@ export const NailPromo: React.FC<PromoProps> = ({variant, texts}) => {
 export const Cover: React.FC<PromoProps> = ({texts}) => {
   if (!texts) throw new Error('texts prop is required');
   const t = texts;
+  useFonts(t);
   return (
     <AbsoluteFill style={{background: C.cream}}>
       <FramedPhoto src="IMG_3599.jpg" aspect={ASPECT['IMG_3599.jpg']} top={590} />
       <Scrim side="top" strength={0.38} reach={42} />
       <PromoTag t={t} text={t.cover.tag} at={0} static />
       <TextBlock t={t} top={350}>
-        <Rich text={t.cover.headline} size={104} lineSizes={[230, 104]} lineHeight={1.08} goldStyle={{letterSpacing: '-0.01em'}} />
+        <Rich text={t.cover.headline} size={104} lineSizes={szs(t, 'cover_headline', [230, 104])} lineHeight={1.08} goldStyle={{letterSpacing: '-0.01em'}} />
         <div style={{marginTop: 22, display: 'inline-block', padding: '10px 30px', borderRadius: 999, background: 'rgba(74, 48, 43, 0.42)'}}>
-          <Rich text={t.cover.sub} size={44} />
+          <Rich text={t.cover.sub} size={sz(t, 'cover_sub', 44)} />
         </div>
       </TextBlock>
       <Sparkles seed="cover" count={7} region={{x0: 200, x1: 900, y0: 980, y1: 1400}} size={[18, 34]} />
